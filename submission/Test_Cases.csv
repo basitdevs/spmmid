@@ -1,0 +1,99 @@
+﻿Test ID,Module,Test case,Expected result,Actual result,Status
+TC-01,Schedule,One working day after Friday 4 Dec 2026,2026-12-07,2026-12-07,Pass
+TC-02,Schedule,Last of 80 working days from 31 Aug 2026,2026-12-18,2026-12-18,Pass
+TC-03,Schedule,"CPM finish, A3 to B2/C5 to D4",12,12,Pass
+TC-04,Schedule,Critical path activities,"['A', 'C', 'D']","['A', 'C', 'D']",Pass
+TC-05,Schedule,Total float of non-critical B,3,3,Pass
+TC-06,Schedule,SS+2 start offset,2,2,Pass
+TC-07,Schedule,FF+1 finish offset,6,6,Pass
+TC-08,Schedule,Dependency loop detected,Rejected with message containing 'loop',"Rejected: Dependency loop detected among: A, B.",Pass
+TC-09,Schedule,2-day delay on critical C moves finish and D,"(2, {'D': 2})","(2, {'D': 2})",Pass
+TC-10,Schedule,2-day delay on B is absorbed by float,"(0, 2)","(0, 2)",Pass
+TC-11,Schedule,Late predecessor pushes forecast,"(7, 2, 0)","(7, 2, 0)",Pass
+TC-12,EVM,"CPI, SPI, CV, SV, EAC","(0.8, 0.8, -1000, -1000, 12500)","(0.8, 0.8, -1000, -1000, 12500.0)",Pass
+TC-13,EVM,No division by zero before work starts,"(None, None, 1000)","(None, None, 1000)",Pass
+TC-14,EVM,"Planned fraction before, during, after","(0, 0.5, 1)","(0.0, 0.5, 1.0)",Pass
+TC-15,EVM,CPI and SPI of 0.80 raise critical alerts,"['critical', 'critical']","['critical', 'critical']",Pass
+TC-16,EVM,Healthy project raises no alerts,[],[],Pass
+TC-17,EVM,Overrun and deadline slip detected,True,True,Pass
+TC-18,Integration,Charter with no name,Rejected with message containing 'Project name is required',Rejected: Project name is required.,Pass
+TC-19,Integration,Direct budget edit after baseline,Rejected with message containing 'approved change request',"Rejected: Budget, deadline and start date are baselined. They can only change through an approved change request.",Pass
+TC-20,Integration,Close project with open work,Rejected with message containing 'cannot be closed',Rejected: The project cannot be closed yet. Failing: All activities finished; No pending change requests; No unresolved defects; All quality checks passed.,Pass
+TC-21,Integration,Closed project stores record and is read-only,"('Closed', 1, 302, 0)","('Closed', 1, 302, 0)",Pass
+TC-22,Integration,Second Accountable on one area,Rejected with message containing 'only one',Rejected: Change control already has an Accountable person. Each area can have only one.,Pass
+TC-23,Scope,New requirement starts as Proposed,"('R-011', 'Proposed')","('R-011', 'Proposed')",Pass
+TC-24,Scope,Invalid priority,Rejected with message containing 'Priority must be',"Rejected: Priority must be one of: Must, Should, Could, Wont.",Pass
+TC-25,Scope,Approve requirement with no change request,Approved,Approved,Pass
+TC-26,Scope,Direct approval of AI requirement controlled by CR-001,Rejected with message containing 'only be decided through',Rejected: R-007 is controlled by CR-001. It can only be decided through that change request.,Pass
+TC-27,Scope,Add unapproved requirement to WBS,Rejected with message containing 'Only approved',Rejected: Only approved requirements can be included in the WBS.,Pass
+TC-28,Scope,Database trigger blocks direct SQL insert,Rejected with message containing 'Only approved',Rejected: Only approved requirements can be included in the WBS.,Pass
+TC-29,Scope,Generate WBS adds approved only,"(1, 0)","(1, 0)",Pass
+TC-30,Scope,Hierarchical codes,"('1', '1.1', '1.1.1')","('1', '1.1', '1.1.1')",Pass
+TC-31,Scope,WBS root budget equals total planned budget,4691000,4691000,Pass
+TC-32,Scope,Delete work package with activities,Rejected with message containing 'cannot be deleted',Rejected: This item has activities and cannot be deleted.,Pass
+TC-33,Scope,Edit title of approved requirement,Rejected with message containing 'only its priority',"Rejected: R-001 is approved, so only its priority can change.",Pass
+TC-34,Change control,Budget after CR-001,5800000,5800000,Pass
+TC-35,Change control,Deadline after +3 weeks,2027-01-08,2027-01-08,Pass
+TC-36,Change control,Requirements approved and WBS extended,"(8, 6)","(8, 6)",Pass
+TC-37,Change control,Network recalculated to 19 weeks,"(27, 95, datetime.date(2027, 1, 8))","(27, 95, datetime.date(2027, 1, 8))",Pass
+TC-38,Change control,Planned cost rises by exact impact,5491000,5491000,Pass
+TC-39,Change control,New baseline v2 recorded,"(5800000, '2027-01-08', 1)","(5800000, '2027-01-08', 1)",Pass
+TC-40,Change control,Preview shows effect but changes nothing,"(5800000, 5000000, 23)","(5800000, 5000000, 23)",Pass
+TC-41,Change control,"Rejected CR leaves budget, rejects requirements","(5000000, 'Rejected')","(5000000, 'Rejected')",Pass
+TC-42,Change control,Reject with no reason,Rejected with message containing 'Decision note is required',Rejected: Decision note is required.,Pass
+TC-43,Change control,Approve the same CR twice,Rejected with message containing 'already approved',Rejected: CR-001 is already approved.,Pass
+TC-44,Change control,Declared cost differs from work items,Rejected with message containing 'must match',"Rejected: Declared cost impact is PKR 700,000, but the work items total PKR 800,000. They must match.",Pass
+TC-45,Change control,Failed approval rolls back all changes,"(5000000, 23, 'Proposed')","(5000000, 23, 'Proposed')",Pass
+TC-46,Change control,Schedule impact understated,Rejected with message containing 'declared impact is not enough',"Rejected: The declared impact is not enough. This change moves the planned finish to 08 Jan 2027, past the approved deadline of 25 Dec 2026. Raise a change request instead.",Pass
+TC-47,Change control,Negative cost impact,Rejected with message containing 'at least 0',Rejected: Cost impact must be at least 0.,Pass
+TC-48,Schedule,Activity within float and budget is accepted,24,24,Pass
+TC-49,Schedule,New activity pushes plan past deadline,Rejected with message containing 'past the approved deadline',"Rejected: This change moves the planned finish to 07 May 2027, past the approved deadline of 18 Dec 2026. Raise a change request instead.",Pass
+TC-50,Schedule,New activity exceeds approved budget,Rejected with message containing 'above the approved budget',"Rejected: This change raises the planned cost to PKR 5,605,000, above the approved budget of PKR 5,000,000. Raise a change request instead.",Pass
+TC-51,Schedule,Malformed dependency text,Rejected with message containing 'not a valid dependency',Rejected: 'A22XX' is not a valid dependency. Use a form like A01 or A02SS+2.,Pass
+TC-52,Schedule,Unknown predecessor,Rejected with message containing 'does not exist',Rejected: Dependency A99 does not exist.,Pass
+TC-53,Schedule,Zero duration,Rejected with message containing 'at least 1',Rejected: Duration must be at least 1.,Pass
+TC-54,Schedule,No team member assigned,Rejected with message containing 'Assign at least one',Rejected: Assign at least one team member.,Pass
+TC-55,Schedule,Edit creates dependency loop,Rejected with message containing 'loop',"Rejected: Dependency loop detected among: A16, A17, A18, A19.",Pass
+TC-56,Schedule,Change duration of started activity,Rejected with message containing 'plan is locked',"Rejected: A06 has started, so its plan is locked. Use Update progress to record actuals and remaining days.",Pass
+TC-57,Schedule,Start A16 before predecessors finish,Rejected with message containing 'cannot start',Rejected: A16 cannot start: predecessor A10 is not finished.,Pass
+TC-58,Schedule,Progress after status date,Rejected with message containing 'status date',Rejected: Progress date must be between the project start and the status date. Move the status date in Settings first if needed.,Pass
+TC-59,Schedule,Forecast deadline slip in sample data,"(80, 85, 5)","(80, 85, 5)",Pass
+TC-60,Schedule,A16 reported as delayed by inheritance,True,True,Pass
+TC-61,Schedule,What-if: +3 days on critical A10,"(3, True)","(3, True)",Pass
+TC-62,Schedule,Over-allocation detected,True,True,Pass
+TC-63,Schedule,Milestone states,"('Achieved', 'At risk')","('Achieved', 'At risk')",Pass
+TC-64,Cost,A02: 8d x (17000x.5 + 14000x.5 + 11000x.5) + 45000,213000,213000,Pass
+TC-65,Cost,BAC equals sum of activity budgets,4691000,4691000,Pass
+TC-66,Cost,Recording expenditure raises AC,3252000,3252000,Pass
+TC-67,Cost,Cost on unstarted activity,Rejected with message containing 'has not started',"Rejected: A17 has not started, so costs cannot be recorded against it.",Pass
+TC-68,Cost,Negative amount,Rejected with message containing 'at least 1',Rejected: Amount must be at least 1.,Pass
+TC-69,Cost,Non-numeric amount,Rejected with message containing 'whole number',Rejected: Amount must be a whole number.,Pass
+TC-70,Cost,Invalid date,Rejected with message containing 'valid date',Rejected: Date must be a valid date (YYYY-MM-DD).,Pass
+TC-71,EVM,EV rises by budget x progress gained,3058350,3058350,Pass
+TC-72,EVM,Sample data triggers cost and schedule warnings,True,True,Pass
+TC-73,EVM,Lower thresholds silence CPI and SPI warnings,False,False,Pass
+TC-74,EVM,Status date before recorded actuals,Rejected with message containing 'recorded actuals',Rejected: Status date cannot be before recorded actuals (latest is 2026-11-11).,Pass
+TC-75,Quality,Complete activity with critical defects,Rejected with message containing 'defects are unresolved',"Rejected: A21 cannot be completed while defects are unresolved: D-001, D-002, D-003.",Pass
+TC-76,Quality,Resolving posts rework to actual cost,3287000,3287000,Pass
+TC-77,Quality,Rework is not posted twice,1,1,Pass
+TC-78,Quality,Resolve without a note,Rejected with message containing 'resolution note',Rejected: A resolved defect needs a resolved date and a resolution note.,Pass
+TC-79,Quality,In Progress with no assignee,Rejected with message containing 'must be assigned',Rejected: A defect that is In Progress must be assigned to someone.,Pass
+TC-80,Quality,Invalid severity,Rejected with message containing 'Severity must be',"Rejected: Severity must be one of: Critical, High, Medium, Low.",Pass
+TC-81,Quality,Pass a check while critical defects are open,Rejected with message containing 'cannot pass',"Rejected: This deliverable cannot pass while critical defects are open: D-001, D-002.",Pass
+TC-82,Quality,Inspection result saved,Pass,Pass,Pass
+TC-83,Quality,Fail with no notes,Rejected with message containing 'Notes is required',Rejected: Notes is required.,Pass
+TC-84,Risk,Top risk by likelihood x impact,"('RK-01', 20, 'High', 1)","('RK-01', 20, 'High', 1)",Pass
+TC-85,Risk,Likelihood above 5,Rejected with message containing 'at most 5',Rejected: Likelihood must be at most 5.,Pass
+TC-86,Risk,"PDPC holds deliverables, problems and countermeasures","(4, 6, 14)","(4, 6, 14)",Pass
+TC-87,System,All 39 pages load,[],[],Pass
+TC-88,System,All pages load after CR approval,[],[],Pass
+TC-89,System,Missing record returns friendly 404,404,404,Pass
+TC-90,System,Invalid form re-displays with message,"(200, True)","(200, True)",Pass
+TC-91,System,Approve CR through the web interface,"(302, 5800000)","(302, 5800000)",Pass
+TC-92,System,POST without security token refused,400,400,Pass
+TC-93,System,Foreign key integrity enforced,Rejected with message containing 'FOREIGN KEY',Rejected: FOREIGN KEY constraint failed,Pass
+TC-94,System,User text is HTML-escaped,"(False, True)","(False, True)",Pass
+TC-95,System,SQL injection text is stored harmlessly,11,11,Pass
+TC-96,System,Traceability links requirement to work and defects,True,True,Pass
+TC-97,System,Dashboard totals,"(1, 2, True)","(1, 2, True)",Pass
+TC-98,System,Each page displays its module data,[],[],Pass

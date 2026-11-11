@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% import "macros.html" as m with context %}{% set title = 'Defects' %}
+{% block body %}
+<div class="top"><div><h1>Defect Tracking</h1><div class="sub">Critical or high defects block their activity from completing.</div></div><div class="actions"><a class="btn primary" href="{{ url_for('defect_new') }}">Record defect</a></div></div>
+<div class="card scroll"><table><tr><th>Code</th><th>Defect</th><th>Severity</th><th>Status</th><th>Assigned</th><th>Activity</th><th>Found</th><th>Resolved</th><th class="num">Rework cost</th><th></th></tr>{% for d in items %}<tr><td>{{ d.code }}</td><td>{{ d.title }}<div class="muted small">{{ d.resolution or d.description }}</div></td><td>{{ m.pill(d.severity) }}</td><td>{{ m.pill(d.status) }}</td><td class="nowrap">{{ d.assignee or '-' }}</td><td>{{ d.act }}</td><td class="nowrap">{{ d.found_date|dmy }}</td><td class="nowrap">{{ d.resolved_date|dmy }}</td><td class="num">{{ d.rework_cost|money }}</td><td><a href="{{ url_for('defect_edit', i=d.id) }}">Update</a></td></tr>{% endfor %}</table></div>
+{% endblock %}

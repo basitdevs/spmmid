@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% import "macros.html" as m with context %}{% set title = 'Project Charter' %}
+{% block body %}
+<div class="top"><div><h1>Project Charter</h1><div class="sub">{{ p.name }}</div></div><div class="actions"><a class="btn primary" href="{{ url_for('charter_edit') }}">Edit charter</a></div></div>
+<div class="kpis">{{ m.kpi('Client', p.client) }}{{ m.kpi('Start date', p.start_date|dmy) }}{{ m.kpi('Deadline', p.deadline|dmy) }}{{ m.kpi('Approved budget', p.approved_budget|money) }}</div>
+<div class="card"><h2>Description</h2><p>{{ p.description }}</p></div>
+<div class="grid2"><div class="card"><h2>In scope</h2><p class="pre">{{ p.scope_in }}</p></div><div class="card"><h2>Out of scope</h2><p class="pre">{{ p.scope_out }}</p></div></div>
+<div class="card"><div class="top"><h2>Objectives</h2><a class="btn" href="{{ url_for('objective_new') }}">Add objective</a></div><table><tr><th>Objective</th><th>Success measure</th><th></th></tr>{% for o in objectives %}<tr><td>{{ o.text }}</td><td>{{ o.measure }}</td><td><a href="{{ url_for('objective_edit', i=o.id) }}">Edit</a></td></tr>{% endfor %}</table></div>
+<div class="card"><div class="top"><h2>Stakeholders</h2><a class="btn" href="{{ url_for('stakeholder_new') }}">Add stakeholder</a></div><table><tr><th>Name</th><th>Role</th><th>Organization</th><th>Influence</th><th></th></tr>{% for s in stakeholders %}<tr><td>{{ s.name }}</td><td>{{ s.role }}</td><td>{{ s.organization }}</td><td>{{ m.pill(s.influence) }}</td><td><a href="{{ url_for('stakeholder_edit', i=s.id) }}">Edit</a></td></tr>{% endfor %}</table></div>
+{% endblock %}

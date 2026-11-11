@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% import "macros.html" as m with context %}{% set title = 'Requirements' %}
+{% block body %}
+<div class="top"><div><h1>Requirements</h1><div class="sub">Only approved requirements can enter the WBS and schedule.</div></div><div class="actions"><a class="btn primary" href="{{ url_for('requirement_new') }}">Add requirement</a></div></div>
+<div class="card scroll"><table><tr><th>Code</th><th>Title</th><th>Priority</th><th>Status</th><th>Change</th><th class="num">Activities</th><th class="num">Budget</th><th>Progress</th><th class="num">Open defects</th><th></th></tr>
+{% for r in items %}<tr><td>{{ r.code }}</td><td>{{ r.title }}<div class="muted small">{{ r.description }}</div></td><td>{{ m.pill(r.priority) }}</td><td>{{ m.pill(r.status) }}</td><td>{% if r.cr_id %}<a href="{{ url_for('change_detail', i=r.cr_id) }}">{{ r.cr_code }}</a>{% endif %}</td><td class="num">{{ r.activities }}</td><td class="num">{{ r.budget|money }}</td><td>{{ m.bar(r.progress) }}</td><td class="num">{{ r.open_defects }}</td>
+<td><div class="rowact"><a href="{{ url_for('requirement_edit', i=r.id) }}">Edit</a>{% if r.status == 'Proposed' and not r.cr_id %}{{ m.post(url_for('requirement_decide', i=r.id, decision='approve'), 'Approve') }}{{ m.post(url_for('requirement_decide', i=r.id, decision='reject'), 'Reject', 'link danger') }}{% endif %}</div></td></tr>{% endfor %}</table></div>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% import "macros.html" as m with context %}{% set title = 'PDPC Chart' %}
+{% block body %}
+<div class="top"><div><h1>Process Decision Program Chart</h1><div class="sub">Goal, deliverables, potential problems and countermeasures. ✓ feasible, ✕ not feasible.</div></div></div>
+<div class="card"><div class="pdpc-goal">Goal: deliver {{ p.name }} by {{ p.deadline|dmy }} within {{ p.approved_budget|money }}</div>
+{% for g in groups %}<div class="pdpc-group"><h2>{{ g.deliverable }}</h2>{% for r in g.risks %}<div class="pdpc-row"><div class="problem"><b>{{ r.code }}</b> {{ r.title }}<div class="small">Score {{ r.score }} · {{ r.rating }} · <a href="{{ url_for('response_new', i=r.id) }}">Add countermeasure</a></div></div><div>{% for x in r.responses %}<div class="counter"><span>{{ m.pill(x.type) }}</span><span>{{ x.action }}</span><span title="{{ 'Feasible' if x.feasible else 'Not feasible' }}">{{ '✓' if x.feasible else '✕' }}</span></div>{% else %}<span class="muted">No countermeasures yet.</span>{% endfor %}</div></div>{% endfor %}</div>{% else %}<div class="empty">No open risks.</div>{% endfor %}</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ title|default('SPMS') }}{% endblock %} - SPMS</title>
+<link rel="icon" href="data:,"><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"><script src="{{ url_for('static', filename='app.js') }}"></script></head>
+<body><div class="shell"><nav class="side">
+<div class="brand">SPMS<small>Healthcare Project Manager</small></div>
+{% set nav_groups = [('Overview',[('dashboard_page','Dashboard'),('report_page','Project Report')]),
+('1 Integration',[('charter_page','Project Charter'),('plan_page','Management Plan'),('status_page','Status and Milestones'),('closure_page','Project Closure')]),
+('2 Scope',[('requirements_page','Requirements'),('wbs_page','Work Breakdown'),('changes_page','Change Requests')]),
+('3 Schedule',[('activities_page','Activities'),('gantt_page','Gantt Chart'),('delays_page','Delay Analysis'),('resources_page','Resources')]),
+('4 Cost',[('costs_page','Cost Tracking'),('evm_page','Earned Value')]),
+('5 Quality and Risk',[('defects_page','Defects'),('quality_page','Quality Checklist'),('risks_page','Risk Matrix'),('pdpc_page','PDPC Chart')]),
+('System',[('settings_page','Settings'),('audit_page','Audit Log')])] %}
+{% for g, links in nav_groups %}<h3>{{ g }}</h3>{% for e, l in links %}<a href="{{ url_for(e) }}"{% if request.endpoint == e %} class="on"{% endif %}>{{ l }}</a>{% endfor %}{% endfor %}
+</nav><main class="main">
+{% for cat, msg in get_flashed_messages(with_categories=true) %}<div class="alert {{ cat }}">{{ msg }}</div>{% endfor %}
+{% block body %}{% endblock %}
+</main></div></body></html>

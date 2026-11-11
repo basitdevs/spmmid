@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% import "macros.html" as m with context %}{% set title = 'Resources' %}
+{% block body %}
+<div class="top"><div><h1>Resources</h1><div class="sub">Peak planned load per week. Above 100% means over-allocated.</div></div><div class="actions"><a class="btn primary" href="{{ url_for('member_new') }}">Add team member</a></div></div>
+<div class="card scroll"><h2>Weekly load (%)</h2><table class="heat"><tr><th>Member</th>{% for w in weeks %}<th>{{ w.strftime('%d/%m') }}</th>{% endfor %}<th>Over days</th></tr>{% for p in people %}<tr><td class="name">{{ p.name }}</td>{% for c in p.cells %}<td style="background:{% if c > 100 %}#fcebe9;color:#b3261e;font-weight:700{% elif c >= 75 %}#b9d3ee{% elif c > 0 %}#e8f0f9{% else %}#f5f6f8;color:#9aa5b1{% endif %}">{{ c or '' }}</td>{% endfor %}<td>{{ p.over_days }}</td></tr>{% endfor %}</table></div>
+<div class="card"><h2>Team</h2><table><tr><th>Name</th><th>Role</th><th class="num">Daily rate</th><th class="num">Planned person-days</th><th></th></tr>{% for t in team %}<tr><td>{{ t.name }}</td><td>{{ t.role }}</td><td class="num">{{ t.daily_rate|money }}</td><td class="num">{{ '%.1f' % people[loop.index0].person_days }}</td><td><a href="{{ url_for('member_edit', i=t.id) }}">Edit</a></td></tr>{% endfor %}</table></div>
+{% endblock %}

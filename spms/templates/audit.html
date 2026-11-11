@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% import "macros.html" as m with context %}{% set title = 'Audit Log' %}
+{% block body %}
+<div class="top"><div><h1>Audit Log</h1><div class="sub">{{ count }} recorded actions</div></div></div>
+<div class="card scroll"><table><tr><th>Time</th><th>Action</th><th>Detail</th></tr>{% for a in items %}<tr><td class="nowrap">{{ a.ts }}</td><td>{{ a.action }}</td><td>{{ a.detail }}</td></tr>{% endfor %}</table></div>
+{% endblock %}

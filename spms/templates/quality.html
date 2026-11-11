@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% import "macros.html" as m with context %}{% set title = 'Quality Checklist' %}
+{% block body %}
+<div class="top"><div><h1>Quality Checklist</h1><div class="sub">Inspection and test results for each deliverable.</div></div><div class="actions"><a class="btn primary" href="{{ url_for('check_new') }}">Add check</a></div></div>
+<div class="card scroll"><table><tr><th>Deliverable</th><th>Criterion</th><th>Method</th><th>Result</th><th>Date</th><th>Inspector</th><th>Notes</th><th></th></tr>{% for c in items %}<tr><td>{{ c.deliverable }}</td><td>{{ c.criterion }}</td><td>{{ c.method }}</td><td>{{ m.pill(c.result or 'Not run') }}</td><td class="nowrap">{{ c.result_date|dmy }}</td><td class="nowrap">{{ c.inspector or '-' }}</td><td>{{ c.notes or '' }}</td><td class="nowrap"><a href="{{ url_for('check_result', i=c.id) }}">Record result</a></td></tr>{% endfor %}</table></div>
+{% endblock %}

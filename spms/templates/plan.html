@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% import "macros.html" as m with context %}{% set title = 'Management Plan' %}
+{% block body %}
+<div class="top"><div><h1>Project Management Plan</h1><div class="sub">Version {{ p.plan_version }}</div></div><div class="actions"><a class="btn primary" href="{{ url_for('plan_edit') }}">Edit plan</a></div></div>
+<div class="grid2">
+<div class="card"><h2>Scope</h2><p>{{ p.plan_scope }}</p><p class="muted small">Approved scope: {{ scope|length }} requirements, {{ snap.wbs }} WBS items.</p><table>{% for r in scope %}<tr><td>{{ r.code }}</td><td>{{ r.title }}</td></tr>{% endfor %}</table></div>
+<div><div class="card"><h2>Schedule</h2><p>{{ p.plan_schedule }}</p><table><tr><td>Start</td><td class="num">{{ p.start_date|dmy }}</td></tr><tr><td>Planned finish</td><td class="num">{{ snap.planned_finish|dmy }}</td></tr><tr><td>Deadline</td><td class="num">{{ snap.deadline|dmy }}</td></tr><tr><td>Duration</td><td class="num">{{ '%g' % snap.duration_weeks }} weeks</td></tr><tr><td>Activities</td><td class="num">{{ snap.activities }}</td></tr></table></div>
+<div class="card" style="margin-top:16px"><h2>Cost</h2><p>{{ p.plan_cost }}</p><table><tr><td>Approved budget</td><td class="num">{{ snap.budget|money }}</td></tr><tr><td>Planned cost (BAC)</td><td class="num">{{ snap.bac|money }}</td></tr><tr><td>Management reserve</td><td class="num">{{ snap.reserve|money }}</td></tr></table></div></div></div>
+<div class="card"><h2>Quality</h2><p>{{ p.plan_quality }}</p><p class="muted small">{{ checks }} quality checks defined. CPI and SPI warning limits: {{ '%.2f' % p.cpi_warn }} and {{ '%.2f' % p.spi_warn }}.</p></div>
+<div class="card"><h2>Baseline history</h2><table><tr><th>Version</th><th>Date</th><th>Reason</th><th class="num">Budget</th><th class="num">Planned cost</th><th>Deadline</th></tr>{% for b in baselines %}<tr><td>v{{ b.version }}</td><td class="nowrap">{{ b.created_on|dmy }}</td><td>{{ b.reason }}</td><td class="num">{{ b.budget|money }}</td><td class="num">{{ b.bac|money }}</td><td class="nowrap">{{ b.deadline|dmy }}</td></tr>{% endfor %}</table></div>
+{% endblock %}

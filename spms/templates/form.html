@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% import "macros.html" as m with context %}
+{% block body %}
+<div class="top"><div><h1>{{ title }}</h1>{% if intro %}<div class="sub">{{ intro }}</div>{% endif %}</div></div>
+<div class="card form"><form method="post">{{ m.csrf() }}
+{% for f in fields %}<div class="field"><label for="{{ f.name }}">{{ f.label }}{% if not f.required %} <span class="muted">(optional)</span>{% endif %}</label>
+{% set v = values.get(f.name) if values.get(f.name) is not none else '' %}
+{% if f.type == 'textarea' %}<textarea id="{{ f.name }}" name="{{ f.name }}">{{ v }}</textarea>
+{% elif f.type == 'select' %}<select id="{{ f.name }}" name="{{ f.name }}">{% if not f.required or v == '' %}<option value="">Select...</option>{% endif %}{% for val, lab in f.options %}<option value="{{ val }}"{% if val|string == v|string %} selected{% endif %}>{{ lab }}</option>{% endfor %}</select>
+{% elif f.type == 'alloc' %}<div class="alloc">{% for t in f.options %}<span>{{ t.name }} <span class="muted small">{{ t.role }}, PKR {{ '{:,}'.format(t.daily_rate) }}/day</span></span><input type="number" min="0" max="100" name="alloc_{{ t.id }}" value="{{ values.get('alloc_' ~ t.id, '') }}" placeholder="0">{% endfor %}</div>
+{% else %}<input id="{{ f.name }}" type="{{ f.type }}" name="{{ f.name }}" value="{{ v }}"{% if f.step %} step="{{ f.step }}"{% endif %}>{% endif %}
+{% if f.help %}<div class="help">{{ f.help }}</div>{% endif %}</div>{% endfor %}
+<div class="actions"><button class="primary">Save</button><a class="btn" href="{{ back }}">Cancel</a></div></form></div>
+{% if request.endpoint == 'settings_page' %}<div class="card form"><h2>Sample data</h2><p class="muted">Restore the case study data. This erases all changes made in the application.</p>{{ m.post(url_for('reset'), 'Reset to sample data', 'danger', 'Erase all changes and restore the sample data?') }}</div>{% endif %}
+{% endblock %}

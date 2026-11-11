@@ -1,0 +1,24 @@
+{% extends "base.html" %}{% import "macros.html" as m with context %}{% set title = 'Dashboard' %}
+{% block body %}
+<div class="top"><div><h1>{{ p.name }}</h1><div class="sub">{{ p.client }} · Status as of {{ p.status_date|dmy }} · {{ p.status }}</div></div>
+<div class="actions">Health {{ m.pill(health) }}<a class="btn" href="{{ url_for('report_page') }}">Open report</a></div></div>
+<div class="kpis four">
+{{ m.kpi('Overall progress', '%.1f%%' % evm.pct_complete, 'Planned %.1f%%, %d of %d activities done' % (evm.pct_planned, done, total)) }}
+{{ m.kpi('Approved budget', p.approved_budget|money, 'Planned cost ' ~ evm.bac|money) }}
+{{ m.kpi('Actual cost', evm.ac|money, 'Forecast at completion ' ~ evm.eac|money) }}
+{{ m.kpi('CPI / SPI', evm.cpi|idx ~ ' / ' ~ evm.spi|idx, 'Target 1.00 or higher') }}
+{{ m.kpi('Forecast finish', s.fc_finish_date|dmy, 'Deadline ' ~ p.deadline|dmy) }}
+{{ m.kpi('Pending changes', pending|length, 'Awaiting decision') }}
+{{ m.kpi('Delayed activities', delayed|length, 'Not yet finished') }}
+{{ m.kpi('Critical defects', critical|length, 'Unresolved') }}
+</div>
+{% if warnings %}<div class="card"><h2>Warnings</h2>{{ m.alerts(warnings) }}</div>{% endif %}
+<div class="card"><h2>Planned value, earned value and actual cost (PKR)</h2><div class="legend"><span><i style="background:#2a78d6"></i>Planned value</span><span><i style="background:#0ca678"></i>Earned value</span><span><i style="background:#e8590c"></i>Actual cost</span></div><div id="curve" class="chart-wrap"></div></div>
+<script>drawCurve("curve", {{ curve|tojson }});</script>
+<div class="grid2">
+<div class="card"><h2>Pending change requests</h2>{% if pending %}<table><tr><th>Code</th><th>Title</th><th class="num">Cost</th><th class="num">Days</th></tr>{% for c in pending %}<tr><td><a href="{{ url_for('change_detail', i=c.id) }}">{{ c.code }}</a></td><td>{{ c.title }}</td><td class="num">{{ c.cost_impact|money }}</td><td class="num">{{ c.schedule_impact_days }}</td></tr>{% endfor %}</table>{% else %}<div class="empty">None pending.</div>{% endif %}</div>
+<div class="card"><h2>Unresolved critical defects</h2>{% if critical %}<table><tr><th>Code</th><th>Title</th><th>Assigned</th><th>Status</th></tr>{% for d in critical %}<tr><td><a href="{{ url_for('defect_edit', i=d.id) }}">{{ d.code }}</a></td><td>{{ d.title }}</td><td class="nowrap">{{ d.assignee or '-' }}</td><td>{{ m.pill(d.status) }}</td></tr>{% endfor %}</table>{% else %}<div class="empty">No critical defects.</div>{% endif %}</div>
+<div class="card"><h2>Delayed activities</h2>{% if delayed %}<div class="scroll"><table><tr><th>Code</th><th>Activity</th><th class="num">Slip</th><th>Forecast</th></tr>{% for a in delayed[:8] %}<tr><td>{{ a.code }}</td><td>{{ a.name }}</td><td class="num">{{ a.slip }}d</td><td class="nowrap">{{ a.forecast_finish|dmy }}</td></tr>{% endfor %}</table></div>{% if delayed|length > 8 %}<p class="small"><a href="{{ url_for('delays_page') }}">See all {{ delayed|length }}</a></p>{% endif %}{% else %}<div class="empty">Nothing is delayed.</div>{% endif %}</div>
+<div class="card"><h2>Milestones</h2><table><tr><th>Milestone</th><th>Planned</th><th>Forecast</th><th>Status</th></tr>{% for x in milestones %}<tr><td>{{ x.name }}</td><td class="nowrap">{{ x.planned|dmy }}</td><td class="nowrap">{{ x.forecast|dmy }}</td><td>{{ m.pill(x.state) }}</td></tr>{% endfor %}</table></div>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% import "macros.html" as m with context %}{% set title = 'Project Closure' %}
+{% block body %}
+<div class="top"><h1>Project Closure</h1></div>
+{% if record %}<div class="card"><h2>Closure record</h2><table><tr><td>Closed on</td><td>{{ record.closed_on|dmy }}</td></tr><tr><td>Accepted by</td><td>{{ record.accepted_by }}</td></tr><tr><td>Final cost</td><td>{{ record.final_cost|money }}</td></tr><tr><td>Final finish</td><td>{{ record.final_finish|dmy }}</td></tr><tr><td>Lessons learned</td><td class="pre">{{ record.lessons }}</td></tr></table></div>{% else %}
+<div class="card"><h2>Closure readiness</h2><table><tr><th>Check</th><th>Result</th><th>Detail</th></tr>{% for c in checks %}<tr><td>{{ c.label }}</td><td>{{ m.pill('Pass' if c.ok else 'Fail') }}</td><td>{{ c.detail }}</td></tr>{% endfor %}</table></div>
+<div class="card form"><h2>Close the project</h2><form method="post">{{ m.csrf() }}<div class="field"><label>Accepted by</label><input name="accepted_by"></div><div class="field"><label>Lessons learned</label><textarea name="lessons"></textarea></div><button class="primary">Close project</button></form></div>{% endif %}
+{% endblock %}

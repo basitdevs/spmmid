@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% import "macros.html" as m with context %}{% set title = 'Gantt Chart' %}
+{% block body %}
+{% set left = 300 %}{% set rh = 24 %}{% set top = 40 %}{% set rows_n = milestones|length + items|length %}{% set height = top + rows_n * rh + 12 %}{% set width = left + span * px + 20 %}{% set mcount = milestones|length %}
+<div class="top"><div><h1>Gantt Chart</h1><div class="sub">Forecast finish {{ s.fc_finish_date|dmy }} against deadline {{ s.project.deadline|dmy }}</div></div></div>
+<div class="card"><div class="legend"><span><i style="background:#1d5fa8;height:9px"></i>Forecast</span><span><i style="background:#b3261e;height:9px"></i>Forecast, critical path</span><span><i style="background:#9aa5b1"></i>Planned</span><span>◆ Milestone</span><span><i style="background:#0b7a55"></i>Status date</span><span><i style="background:#b3261e"></i>Deadline</span></div>
+<div class="scroll"><svg width="{{ width }}" height="{{ height }}" role="img" aria-label="Gantt chart of project activities">
+{% for w, day in weeks %}<line x1="{{ left + w*px }}" x2="{{ left + w*px }}" y1="26" y2="{{ height }}" stroke="#eceff3"/><text x="{{ left + w*px + 3 }}" y="18" font-size="11" fill="#5d6877">{{ day.strftime('%d %b') }}</text>{% endfor %}
+{% for x in milestones %}{% set y = top + loop.index0*rh %}<text x="6" y="{{ y+15 }}" font-size="12" font-weight="600" fill="#1b2430">{{ x.name }}</text><polygon points="{{ left + x.offset*px }},{{ y+5 }} {{ left + x.offset*px + 6 }},{{ y+12 }} {{ left + x.offset*px }},{{ y+19 }} {{ left + x.offset*px - 6 }},{{ y+12 }}" fill="{{ '#0b7a55' if x.state == 'Achieved' else '#93560a' if x.state != 'On track' else '#1d5fa8' }}"><title>{{ x.name }}: planned {{ x.planned|dmy }}, forecast {{ x.forecast|dmy }} ({{ x.state }})</title></polygon><text x="{{ left + x.offset*px + 11 }}" y="{{ y+16 }}" font-size="11" fill="#5d6877">{{ x.state }}</text>{% endfor %}
+{% for a in items %}{% set y = top + (mcount + loop.index0)*rh %}{% set color = '#b3261e' if a.critical else '#1d5fa8' %}{% set fw = (a.ff - a.fs)*px %}
+<text x="6" y="{{ y+15 }}" font-size="12" fill="#1b2430">{{ a.code }}  {{ a.name|truncate(36, true, '…', 0) }}</text>
+<rect x="{{ left + a.es*px }}" y="{{ y+17 }}" width="{{ (a.ef-a.es)*px }}" height="3" rx="1.5" fill="#9aa5b1"/>
+<rect x="{{ left + a.fs*px }}" y="{{ y+5 }}" width="{{ fw }}" height="10" rx="3" fill="{{ color }}" opacity=".35"><title>{{ a.code }} {{ a.name }}: planned {{ a.planned_start|dmy }} to {{ a.planned_finish|dmy }}, forecast finish {{ a.forecast_finish|dmy }}, {{ a.pct }}% complete, float {{ a.float }} days</title></rect>
+{% if a.pct %}<rect x="{{ left + a.fs*px }}" y="{{ y+5 }}" width="{{ fw*a.pct/100 }}" height="10" rx="3" fill="{{ color }}"><title>{{ a.code }} {{ a.name }}: planned {{ a.planned_start|dmy }} to {{ a.planned_finish|dmy }}, forecast finish {{ a.forecast_finish|dmy }}, {{ a.pct }}% complete, float {{ a.float }} days</title></rect>{% endif %}{% endfor %}
+<line x1="{{ left + s.data*px }}" x2="{{ left + s.data*px }}" y1="26" y2="{{ height }}" stroke="#0b7a55" stroke-width="2"/><text x="{{ left + s.data*px }}" y="36" text-anchor="middle" font-size="11" font-weight="600" fill="#0b7a55">Status</text>
+<line x1="{{ left + s.deadline_offset*px }}" x2="{{ left + s.deadline_offset*px }}" y1="26" y2="{{ height }}" stroke="#b3261e" stroke-width="2"/><text x="{{ left + s.deadline_offset*px }}" y="36" text-anchor="middle" font-size="11" font-weight="600" fill="#b3261e">Deadline</text>
+</svg></div></div>
+{% endblock %}
